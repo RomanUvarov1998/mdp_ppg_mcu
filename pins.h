@@ -51,6 +51,7 @@
     #define CS_BIT    0
     #define CS_DDR    DDRB
 
+    void initPins();
     uint8_t btn_mode_pressed();
     uint8_t btn_start_stop_pressed();
     void setScanLedColor(enum LedColors color);

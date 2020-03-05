@@ -11,6 +11,8 @@
  * 
  */
 int main(int argc, char** argv) {
+    initPins();
+    
     setScanLedColor(NONE);
     
     while(1){
