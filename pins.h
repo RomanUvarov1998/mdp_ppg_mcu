@@ -12,12 +12,12 @@
     #include "main.h"
 
     //pin 4
-    #define BTN_MODE_PORT   PORTD
+    #define BTN_MODE_PIN    PIND
     #define BTN_MODE_BIT    4
     #define BTN_MODE_DDR    DDRD
 
     //pin 2
-    #define BTN_START_STOP_PORT   PORTD
+    #define BTN_START_STOP_PIN    PIND
     #define BTN_START_STOP_BIT    2
     #define BTN_START_STOP_DDR    DDRD
 
@@ -50,6 +50,8 @@
     #define CS_PORT   PORTB
     #define CS_BIT    0
     #define CS_DDR    DDRB
+
+    enum LedColors { RED, YELLOW, GREEN, NONE };
 
     void initPins();
     uint8_t btn_mode_pressed();

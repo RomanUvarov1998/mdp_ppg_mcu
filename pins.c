@@ -1,4 +1,4 @@
-#include "main.h"
+#include "pins.h"
 
 void initPins(){
     BTN_MODE_DDR        &= ~(1 << BTN_MODE_BIT);
@@ -16,11 +16,11 @@ void initPins(){
 }
 
 uint8_t btn_mode_pressed(){
-    return 0;
+    return (BTN_MODE_PIN & (1 << BTN_MODE_BIT));
 }
 
 uint8_t btn_start_stop_pressed(){
-    return 0;
+    return (BTN_START_STOP_PIN & (1 << BTN_START_STOP_BIT));
 }
 
 void setScanLedColor(enum LedColors color){

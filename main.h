@@ -6,14 +6,13 @@
  */
 
 #ifndef MAIN_H
-#define	MAIN_H
+    #define	MAIN_H
+
     #define F_CPU 16000000UL
     #include "avr/io.h"
     #include "util/delay.h"
-    #include "stdint.h"
-
-    enum LedColors { RED, YELLOW, GREEN, NONE };
-    
+    #include "stdint.h"    
     #include "pins.h"
+    #include "state.h"
 #endif
 
