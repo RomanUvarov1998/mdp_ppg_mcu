@@ -10,13 +10,13 @@
 int main(int argc, char** argv) {
     initPins();      
     
-//    for transmitting and recieving
-//    initUART(MYUBRR);
-//    sei();    
-//    createSignal();
-//    while(1){      
-//        stateProcessing();
-//    }
+    //for transmitting and recieving
+    initUART(MYUBRR);
+    sei();    
+    createSignal();
+    while(1){      
+        stateProcessing();
+    }
 
     while(1){
         state_pin();

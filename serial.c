@@ -139,6 +139,10 @@ void transmitByte(uint8_t data){
     UCSR0B |= (1<<UDRIE0);
 }
 
+void flush(){
+    while (UART_TxTail != UART_TxHead) ;
+}
+
 uint8_t receiveByte(){
     uint8_t tmptail;
   
@@ -157,6 +161,6 @@ void SendBuffer(){
     int i;
     for (i = 0; i < BS; ++i){
         transmitByte(writeBuffer[i]);
-        _delay_ms(10);
+        receiveByte();
     }
 }
