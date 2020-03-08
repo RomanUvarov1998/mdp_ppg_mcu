@@ -10,11 +10,11 @@ void state_pin(){
     switch (state){
         case CARD_ERROR :
             setScanLedColor(RED);
-            setUploadLedColor(RED);
+            setUploadLedColor(RED); 
             break;
         case WAIT_FOR_SCAN :
             setScanLedColor(GREEN);
-            setUploadLedColor(NONE);
+            setUploadLedColor(NONE); 
             break;
         case SCANNING :
             setScanLedColor(RED);

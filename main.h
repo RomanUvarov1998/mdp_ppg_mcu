@@ -14,5 +14,9 @@
     #include "stdint.h"    
     #include "pins.h"
     #include "state.h"
+    #include "avr/interrupt.h"
+    #include "serial.h"
+
+    void state_transit();
 #endif
 
