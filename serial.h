@@ -40,6 +40,7 @@
     uint8_t receiveByte(void);
     void transmitByte(uint8_t data);
     void SendBuffer();
+    void SendSignal();
 
     #define BS 2
     #define SL 500

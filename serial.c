@@ -136,6 +136,6 @@ void SendBuffer(){
     for (i = 0; i < BS; ++i){
         transmitByte(writeBuffer[i]);
         receiveByte();
-        _delay_ms(30);
+        _delay_ms(10);
     }
 }
