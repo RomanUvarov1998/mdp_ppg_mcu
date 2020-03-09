@@ -10,54 +10,32 @@ void stateProcessing(){
             /////////////////
             response[0] = receiveByte();
             if (response[0] == B_T) {
-                stateTx = SIGNAL_LENGTH;
+                stateTx = SIGNAL_LENGTH_01;
             }
             break;
             ///////////////////////
             break;
-        case SIGNAL_LENGTH: 
-            writeBuffer[0] = SIGNAL_LENGTH;
-            writeBuffer[1] = (uint8_t)(signalLength >> 0);
-            writeBuffer[2] = (uint8_t)(signalLength >> 8);
-            writeBuffer[3] = (uint8_t)(signalLength >> 16);
-            writeBuffer[4] = (uint8_t)(signalLength >> 24);
-            writeBuffer[5] = (uint8_t)(0);
-            writeBuffer[6] = (uint8_t)(0); 
+        case SIGNAL_LENGTH_01: 
+            writeBuffer[0] = (uint8_t)(signalLength >> 0);
+            writeBuffer[1] = (uint8_t)(signalLength >> 8);
+            SendBuffer(); 
+            stateTx = SIGNAL_LENGTH_23;
+            break;
+        case SIGNAL_LENGTH_23: 
+            writeBuffer[0] = (uint8_t)(signalLength >> 16);
+            writeBuffer[1] = (uint8_t)(signalLength >> 24);
             SendBuffer(); 
             stateTx = DATA;
-            _delay_ms(1000);
             break;
         case DATA:      
-            writeBuffer[0] = DATA;
-            writeBuffer[1] = (uint8_t)(sendingValueNum >> 0);
-            writeBuffer[2] = (uint8_t)(sendingValueNum >> 8);
-            writeBuffer[3] = (uint8_t)(sendingValueNum >> 16);
-            writeBuffer[4] = (uint8_t)(sendingValueNum >> 24);
-            writeBuffer[5] = (uint8_t)(signalValues[sendingValueNum] >> 0);
-            writeBuffer[6] = (uint8_t)(signalValues[sendingValueNum] >> 8);
+            writeBuffer[0] = (uint8_t)(signalValues[sendingValueNum] >> 0);
+            writeBuffer[1] = (uint8_t)(signalValues[sendingValueNum] >> 8);
             SendBuffer();
-            stateTx = APPROVING;
-
-            writeBuffer[0] = APPROVING;
-            writeBuffer[1] = (uint8_t)(sendingValueNum >> 0);
-            writeBuffer[2] = (uint8_t)(sendingValueNum >> 8);
-            writeBuffer[3] = (uint8_t)(sendingValueNum >> 16);
-            writeBuffer[4] = (uint8_t)(sendingValueNum >> 24);
-            SendBuffer();
-            break;
-        case APPROVING:     
-            //////////////////
-            response[0] = receiveByte();
-            if (response[0] == Y) ++sendingValueNum;
-
-            if (sendingValueNum >= signalLength) stateTx = DONE; 
-            else stateTx = DATA;        
-            ////////////////////
-            break;
-        case DONE:    
-            writeBuffer[0] = DONE;
-            SendBuffer();
-            stateTx = SLEEP;
+            ++sendingValueNum;
+            if (sendingValueNum >= signalLength) {
+                stateTx = END; 
+                setUploadLedColor(GREEN);
+            }
             break;
     }
 }
@@ -139,10 +117,6 @@ void transmitByte(uint8_t data){
     UCSR0B |= (1<<UDRIE0);
 }
 
-void flush(){
-    while (UART_TxTail != UART_TxHead) ;
-}
-
 uint8_t receiveByte(){
     uint8_t tmptail;
   
@@ -162,5 +136,6 @@ void SendBuffer(){
     for (i = 0; i < BS; ++i){
         transmitByte(writeBuffer[i]);
         receiveByte();
+        _delay_ms(30);
     }
 }

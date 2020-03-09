@@ -8,7 +8,7 @@
 #include "main.h"
 
 int main(int argc, char** argv) {
-    initPins();      
+    initPins();     
     
     //for transmitting and recieving
     initUART(MYUBRR);
@@ -17,7 +17,7 @@ int main(int argc, char** argv) {
     while(1){      
         stateProcessing();
     }
-
+    
     while(1){
         state_pin();
         state_transit();
