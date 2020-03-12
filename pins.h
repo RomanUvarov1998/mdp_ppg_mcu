@@ -21,14 +21,14 @@
     #define BTN_START_STOP_BIT    2
     #define BTN_START_STOP_DDR    DDRD
 
-    //pin 10
+    //pin 9
     #define SCAN_RED_PORT   PORTB
-    #define SCAN_RED_BIT    2
+    #define SCAN_RED_BIT    1
     #define SCAN_RED_DDR    DDRB
 
-    //pin 9
+    //pin 8
     #define SCAN_GREEN_PORT   PORTB
-    #define SCAN_GREEN_BIT    1
+    #define SCAN_GREEN_BIT    0
     #define SCAN_GREEN_DDR    DDRB
 
     //pin 6
@@ -45,11 +45,6 @@
     #define SENSOR_PORT   PORTC
     #define SENSOR_BIT    0
     #define SENSOR_DDR    DDRC
-
-    //pin 8
-    #define CS_PORT   PORTB
-    #define CS_BIT    0
-    #define CS_DDR    DDRB
 
     enum LedColors { RED, YELLOW, GREEN, NONE };
 

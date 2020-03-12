@@ -11,8 +11,6 @@ void initPins(){
     UPLOAD_GREEN_DDR    |= (1 << UPLOAD_GREEN_BIT);
     
     SENSOR_DDR          &= ~(1 << SENSOR_BIT);
-    
-    CS_DDR              |= (1 << CS_BIT);
 }
 
 uint8_t btn_mode_pressed(){

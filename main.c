@@ -7,8 +7,19 @@
 
 #include "main.h"
 
+//#define M_S = 100;//16384;
+
+FATFS fs;          /* Work area (file system object) for the volume */
+BYTE buff[100];     /* File read buffer */
+UINT br;           /* File read count */
+FRESULT res;       /* Petit FatFs function common result code */
+
+static void testSD();
+
 int main(int argc, char** argv) {
-    initPins();   
+    initPins();     
+    
+    //testSD();
     
     while(1){
         state_pin();
@@ -16,6 +27,50 @@ int main(int argc, char** argv) {
     }
 
     return (0);
+}
+
+static void testSD(){
+    res = disk_initialize();
+    if (res) state = CARD_ERROR;
+    
+    res = pf_mount(&fs);
+    if (res == FR_NO_FILESYSTEM) { setUploadLedColor(GREEN); }
+    pf_mount(NULL);
+    while(1);
+    
+    if (res) state = CARD_ERROR;
+    if (FatFs != NULL) setScanLedColor(GREEN); 
+    else setScanLedColor(RED); 
+    
+    res = pf_open("signal.dat");
+    if (res) state = CARD_ERROR;
+    
+    uint8_t i;
+    for (i = 0; i < sizeof(buff); ++i) buff[i] = i;
+    
+    UINT bw;
+    
+    res = pf_write(buff, sizeof(buff), &bw);
+    
+//    if (bw == 10) { setUploadLedColor(RED); }
+//    else { setUploadLedColor(GREEN); }
+    
+    if (res == FR_NOT_ENABLED){ setScanLedColor(GREEN); }
+    else { setScanLedColor(RED); 
+    
+    setUploadLedColor(GREEN);}
+    
+    pf_mount(NULL);
+    while(1);
+  
+//    else if (ds == STA_NODISK) setUploadLedColor(RED);
+//    else setScanLedColor(GREEN);
+  
+//    pf_mount(NULL);
+    if (res == FR_NO_FILE) setScanLedColor(RED);
+//    else if (ds == STA_NODISK) setUploadLedColor(RED);
+//    else setScanLedColor(GREEN);
+    while(1);
 }
 
 void state_transit(){    
@@ -49,11 +104,9 @@ void state_transit(){
             }
             if (btn_start_stop_pressed()){ 
                 state_set(UPLOADIND); 
-                initUART(MYUBRR);
-                sei();    
+                initUART();    
                 createSignal();
-                sendingValueNum = 0;
-                stateTx = BEFORE_TX;
+                prepareToUploading();
                 _delay_ms(1000); 
                 break;
             }
@@ -69,11 +122,6 @@ void state_transit(){
                 break; 
             }
             stateProcessing();
-            if (stateTx == END) {
-                state_set(UPLOADED);
-                _delay_ms(1000); 
-                break;
-            }
             break;
         case UPLOADED :
             if (btn_mode_pressed()){ 

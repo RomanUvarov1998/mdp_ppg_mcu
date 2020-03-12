@@ -21,8 +21,8 @@ void state_pin(){
             setUploadLedColor(NONE);
             break;
         case WAIT_FOR_UPLOAD :
-            setScanLedColor(GREEN);
-            setUploadLedColor(RED);
+            setScanLedColor(NONE);
+            setUploadLedColor(YELLOW);
             break;
         case UPLOADIND :
             setScanLedColor(NONE);
