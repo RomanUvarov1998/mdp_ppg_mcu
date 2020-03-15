@@ -99,7 +99,5 @@ void SendBuffer(){
     int i;
     for (i = 0; i < BS; ++i){
         transmitByte(writeBuffer[i]);
-        //receiveByte();
-        //_delay_ms(20);
     }
 }

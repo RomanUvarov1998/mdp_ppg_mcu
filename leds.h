@@ -11,16 +11,6 @@
 
     #include "main.h"
 
-    //pin 4
-    #define BTN_MODE_PIN    PIND
-    #define BTN_MODE_BIT    4
-    #define BTN_MODE_DDR    DDRD
-
-    //pin 2
-    #define BTN_START_STOP_PIN    PIND
-    #define BTN_START_STOP_BIT    2
-    #define BTN_START_STOP_DDR    DDRD
-
     //pin 9
     #define SCAN_RED_PORT   PORTB
     #define SCAN_RED_BIT    1
@@ -41,16 +31,9 @@
     #define UPLOAD_GREEN_BIT    5
     #define UPLOAD_GREEN_DDR    DDRD
 
-    //pin A0
-    #define SENSOR_PORT   PORTC
-    #define SENSOR_BIT    0
-    #define SENSOR_DDR    DDRC
-
     enum LedColors { RED, YELLOW, GREEN, NONE };
 
     void initPins();
-    uint8_t btn_mode_pressed();
-    uint8_t btn_start_stop_pressed();
     void setScanLedColor(enum LedColors color);
     void setUploadLedColor(enum LedColors color);
 

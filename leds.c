@@ -1,24 +1,11 @@
-#include "pins.h"
+#include "leds.h"
 
-void initPins(){
-    BTN_MODE_DDR        &= ~(1 << BTN_MODE_BIT);
-    BTN_START_STOP_DDR  &= ~(1 << BTN_START_STOP_BIT);
-    
+void initPins(){    
     SCAN_RED_DDR        |= (1 << SCAN_RED_BIT);
     SCAN_GREEN_DDR      |= (1 << SCAN_GREEN_BIT);
     
     UPLOAD_RED_DDR      |= (1 << UPLOAD_RED_BIT);
     UPLOAD_GREEN_DDR    |= (1 << UPLOAD_GREEN_BIT);
-    
-    SENSOR_DDR          &= ~(1 << SENSOR_BIT);
-}
-
-uint8_t btn_mode_pressed(){
-    return (BTN_MODE_PIN & (1 << BTN_MODE_BIT));
-}
-
-uint8_t btn_start_stop_pressed(){
-    return (BTN_START_STOP_PIN & (1 << BTN_START_STOP_BIT));
 }
 
 void setScanLedColor(enum LedColors color){

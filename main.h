@@ -12,7 +12,7 @@
     #include "avr/io.h"
     #include "util/delay.h"
     #include "stdint.h"    
-    #include "pins.h"
+    #include "leds.h"
     #include "state.h"
     #include "avr/interrupt.h"
 
@@ -25,6 +25,8 @@
     #define 	USE_2X   0
     #include "util/setbaud.h"
     #include "serial.h"
+
+    #include "btns.h"
     
     //SD library
     #include "string.h"
