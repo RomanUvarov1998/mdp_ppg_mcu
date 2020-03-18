@@ -1,6 +1,6 @@
 #include "btns.h"
 
-void initBtns(){
+void init_btns(){
     EICRA |= ((1 << ISC01) | (1 << ISC00) | 
             (1 << ISC11) | (1 << ISC10)); //on rising edge
     
@@ -9,28 +9,24 @@ void initBtns(){
     PORTD |= ((1 << PORTD2) | (1 << PORTD3));
 }
 
-static uint8_t on2 = 0;
-static uint8_t on4 = 0; 
-
 // btn "MODE"
 ISR(INT1_vect){
     cli();
     switch (state){
-          case CARD_ERROR :
-              break;
+//          case CARD_ERROR :
+//              break;
           case WAIT_FOR_SCAN :       
               state_set(WAIT_FOR_UPLOAD);
               break;
-          case SCANNING :
-              break;
+//          case SCANNING :
+//              break;
           case WAIT_FOR_UPLOAD :
               state_set(WAIT_FOR_SCAN); 
               break;
-          case UPLOADIND :
-              break;
-          case UPLOADED :
-              state_set(WAIT_FOR_SCAN);
-              break;
+//          case UPLOADING :
+//              break;
+//          case UPLOADED :
+//              break;
       }
     sei();
 }
@@ -39,8 +35,8 @@ ISR(INT1_vect){
 ISR(INT0_vect){
     cli();
     switch (state){
-        case CARD_ERROR :
-            break;
+//        case CARD_ERROR :
+//            break;
         case WAIT_FOR_SCAN :     
             state_set(SCANNING); 
             break;
@@ -48,15 +44,12 @@ ISR(INT0_vect){
             state_set(WAIT_FOR_SCAN); 
             break;
         case WAIT_FOR_UPLOAD :
-            state_set(UPLOADIND); 
-            initUART();    
-            createSignal();
-            prepareToUploading();
+            state_set(UPLOADING); 
             break;
-        case UPLOADIND :
-            break;
-        case UPLOADED :
-            break;
+//        case UPLOADING :
+//            break;
+//        case UPLOADED :
+//            break;
     }
     sei();
 }

@@ -15,11 +15,12 @@
         WAIT_FOR_SCAN,
         SCANNING,
         WAIT_FOR_UPLOAD,
-        UPLOADIND,
+        UPLOADING,
         UPLOADED
     };
     
-    enum States state;
+    volatile enum States state;
+    volatile enum States next_state;
     
     void state_set(enum States value);
     void state_pin();

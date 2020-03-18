@@ -1,79 +1,79 @@
 #include "serial.h"
 
-#define BS 2
-#define SL 500
-
-volatile uint32_t signalLength;
-volatile uint16_t signalValues[SL];
-volatile uint32_t sendingValueNum;
-volatile uint8_t writeBuffer[BS];
-
 #define B_T   49
 #define Q     50
 #define Y     51
-uint8_t response[1];
 
-volatile uint32_t signalLength = SL;
-volatile uint32_t sendingValueNum = 0;
+static volatile uint8_t response[1];
 
-enum StatesTx {
-    BEFORE_TX = 0,
-    SIGNAL_LENGTH_01 = 1,
-    SIGNAL_LENGTH_23 = 2,
-    DATA = 3,
-    END = 4,
-};
+#define BS 2
+static volatile uint8_t uart_buffer[BS];
 
-volatile uint8_t stateTx = BEFORE_TX;
-    
-void prepareToUploading(){    
-    sendingValueNum = 0;
-    stateTx = BEFORE_TX;
+
+static void tx_byte(uint8_t data){ 
+    while ( !(UCSR0A & (1 << UDRE0)) );
+    UDR0 = data;
 }
 
-void stateProcessing(){
-    switch (stateTx){
-        case BEFORE_TX:
-            /////////////////
-            response[0] = receiveByte();
-            if (response[0] == B_T) {
+static uint8_t rx_byte(){
+    while ( !(UCSR0A & (1 << RXC0)) );
+    return UDR0;
+}
+
+static void send_buffer(){  
+    int i;
+    for (i = 0; i < BS; ++i){
+        tx_byte(uart_buffer[i]);
+    }
+}
+    
+void upload_signal(){
+    cli();
+            
+    init_UART();  
+    sendingValueNum = 0;
+    stateTx = BEFORE_TX;
+    reset_sd_cursor();  
+    uint8_t UART_is_busy = 1;
+    
+    while (UART_is_busy){
+        switch (stateTx){
+            case BEFORE_TX:
+                rx_byte();
                 stateTx = SIGNAL_LENGTH_01;
-            }
-            break;
-            ///////////////////////
-            break;
-        case SIGNAL_LENGTH_01: 
-            writeBuffer[0] = (uint8_t)(signalLength >> 0);
-            writeBuffer[1] = (uint8_t)(signalLength >> 8);
-            SendBuffer(); 
-            stateTx = SIGNAL_LENGTH_23;
-            break;
-        case SIGNAL_LENGTH_23: 
-            writeBuffer[0] = (uint8_t)(signalLength >> 16);
-            writeBuffer[1] = (uint8_t)(signalLength >> 24);
-            SendBuffer(); 
-            stateTx = DATA;
-            break;
-        case DATA:      
-            writeBuffer[0] = (uint8_t)(signalValues[sendingValueNum] >> 0);
-            writeBuffer[1] = (uint8_t)(signalValues[sendingValueNum] >> 8);
-            SendBuffer();
-            ++sendingValueNum;
-            if (sendingValueNum >= signalLength) {
-                stateTx = END; 
-                state_set(UPLOADED);
-                _delay_ms(1000); 
-            }
-            break;
+                break;
+            case SIGNAL_LENGTH_01: 
+                uart_buffer[0] = (uint8_t)(signal_length >> 0);
+                uart_buffer[1] = (uint8_t)(signal_length >> 8);
+                send_buffer(); 
+                stateTx = SIGNAL_LENGTH_23;
+                break;
+            case SIGNAL_LENGTH_23: 
+                uart_buffer[0] = (uint8_t)(signal_length >> 16);
+                uart_buffer[1] = (uint8_t)(signal_length >> 24);
+                send_buffer(); 
+                stateTx = DATA;
+                break;
+            case DATA:      
+                uart_buffer[0] = sd_next_byte();
+                uart_buffer[1] = sd_next_byte();
+                send_buffer();
+
+                ++sd_cursor.value_num;
+
+                if (!sd_has_next_byte()) {  
+                    stateTx = END; 
+                    state_set(UPLOADED); 
+                    _delay_ms(1000); 
+                    UART_is_busy = 0;
+                    sei();
+                } 
+                break;
+        }
     }
 }
 
-void createSignal(){
-    int i;
-    for (i = 0; i < signalLength; ++i) signalValues[i] = i;
-}
-
-void initUART(){
+void init_UART(){
     //set baudrate
     UBRR0H = UBRRH_VALUE;//(uint8_t)(ubrr >> 8);
     UBRR0L = UBRRL_VALUE;//(uint8_t)(ubrr & 0xff);
@@ -83,21 +83,4 @@ void initUART(){
     
     //set frame format: 8 data, 1 stop bit
     UCSR0C = ((1 << UCSZ01) | (1 << UCSZ00));
-}
-
-void transmitByte(uint8_t data){ 
-    while ( !(UCSR0A & (1 << UDRE0)) );
-    UDR0 = data;
-}
-
-uint8_t receiveByte(){
-    while ( !(UCSR0A & (1 << RXC0)) );
-    return UDR0;
-}
-
-void SendBuffer(){  
-    int i;
-    for (i = 0; i < BS; ++i){
-        transmitByte(writeBuffer[i]);
-    }
 }

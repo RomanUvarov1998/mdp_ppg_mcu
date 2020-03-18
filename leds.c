@@ -1,6 +1,6 @@
 #include "leds.h"
 
-void initPins(){    
+void init_leds(){    
     SCAN_RED_DDR        |= (1 << SCAN_RED_BIT);
     SCAN_GREEN_DDR      |= (1 << SCAN_GREEN_BIT);
     
@@ -8,7 +8,7 @@ void initPins(){
     UPLOAD_GREEN_DDR    |= (1 << UPLOAD_GREEN_BIT);
 }
 
-void setScanLedColor(enum LedColors color){
+void set_scan_led_color(enum LedColors color){
     switch (color){
         case RED :
             SCAN_GREEN_PORT &= ~(1 << SCAN_GREEN_BIT);
@@ -29,7 +29,7 @@ void setScanLedColor(enum LedColors color){
     }
 }
 
-void setUploadLedColor(enum LedColors color){
+void set_upload_led_lolor(enum LedColors color){
     switch (color){
         case RED :
             UPLOAD_GREEN_PORT &= ~(1 << UPLOAD_GREEN_BIT);

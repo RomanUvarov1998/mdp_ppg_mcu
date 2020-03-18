@@ -7,74 +7,31 @@
 
 #include "main.h"
 
-//#define M_S = 100;//16384;
-
-BYTE buff[100];     /* File read buffer */
-UINT br;           /* File read count */
-FRESULT res;       /* Petit FatFs function common result code */
-FATFS fs;          /* Work area (file system object) for the volume */
-
-static void testSD();
-static void testBtnInt();
-
-int main(int argc, char** argv) {
-    initPins();     
-    initBtns();
+static void state_transit();
     
-    //testSD()
+int main(int argc, char** argv) {
+    init_leds();     
+    init_btns();
+    
+    initSD(); 
+    
+//    set_upload_led_lolor(RED);    
+//    createAndSaveSignal(4500);
+//    set_upload_led_lolor(GREEN);   
+//    _delay_ms(1000);
     
     sei();
     
-    while(1){
-        state_pin();
-        state_transit();
-    }
+    while(1) state_transit();
 
     return (0);
 }
 
-static void testSD(){
-    pf_mount(&fs);
-    while(1);
+static void state_transit(){   
+    state = next_state;
     
-    res = pf_mount(&fs);
+    state_pin();
     
-    if (res) state = CARD_ERROR;
-//    if (FatFs != NULL) setScanLedColor(GREEN); 
-//    else setScanLedColor(RED); 
-    
-    res = pf_open("signal.dat");
-    if (res) state = CARD_ERROR;
-    
-    uint8_t i;
-    for (i = 0; i < sizeof(buff); ++i) buff[i] = i;
-    
-    UINT bw;
-    
-    res = pf_write(buff, sizeof(buff), &bw);
-    
-//    if (bw == 10) { setUploadLedColor(RED); }
-//    else { setUploadLedColor(GREEN); }
-    
-    if (res == FR_NOT_ENABLED){ setScanLedColor(GREEN); }
-    else { setScanLedColor(RED); 
-    
-    setUploadLedColor(GREEN);}
-    
-    pf_mount(NULL);
-    while(1);
-  
-//    else if (ds == STA_NODISK) setUploadLedColor(RED);
-//    else setScanLedColor(GREEN);
-  
-//    pf_mount(NULL);
-    if (res == FR_NO_FILE) setScanLedColor(RED);
-//    else if (ds == STA_NODISK) setUploadLedColor(RED);
-//    else setScanLedColor(GREEN);
-    while(1);
-}
-
-void state_transit(){    
     switch (state){
         case CARD_ERROR :
             break;
@@ -82,13 +39,18 @@ void state_transit(){
             break;
         case SCANNING :
             break;
-        case WAIT_FOR_UPLOAD :
+        case WAIT_FOR_UPLOAD :     
             break;
-        case UPLOADIND :
-            stateProcessing();
+        case UPLOADING :             
+            upload_signal();
             break;
         case UPLOADED :
             break;
     }
 }
+
+
+
+
+
 

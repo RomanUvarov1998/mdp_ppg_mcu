@@ -33,9 +33,9 @@
 
     enum LedColors { RED, YELLOW, GREEN, NONE };
 
-    void initPins();
-    void setScanLedColor(enum LedColors color);
-    void setUploadLedColor(enum LedColors color);
+    void init_leds();
+    void set_scan_led_color(enum LedColors color);
+    void set_upload_led_lolor(enum LedColors color);
 
 #endif	/* PINS_H */
 

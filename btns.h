@@ -10,7 +10,7 @@
 
     #include "main.h"
 
-    void initBtns();
+    void init_btns();
 
 #endif	/* BTNS_H */
 

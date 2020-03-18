@@ -1,36 +1,36 @@
 #include "state.h"
 
-enum States state = WAIT_FOR_SCAN;
+volatile enum States state = WAIT_FOR_SCAN;
+volatile enum States next_state = WAIT_FOR_SCAN;
 
 void state_set(enum States value){
-    state = value;
-    state_pin();
+    next_state = value;
 }
 void state_pin(){
     switch (state){
         case CARD_ERROR :
-            setScanLedColor(RED);
-            setUploadLedColor(RED); 
+            set_scan_led_color(RED);
+            set_upload_led_lolor(RED); 
             break;
         case WAIT_FOR_SCAN :
-            setScanLedColor(GREEN);
-            setUploadLedColor(NONE); 
+            set_scan_led_color(GREEN);
+            set_upload_led_lolor(NONE); 
             break;
         case SCANNING :
-            setScanLedColor(RED);
-            setUploadLedColor(NONE);
+            set_scan_led_color(RED);
+            set_upload_led_lolor(NONE);
             break;
         case WAIT_FOR_UPLOAD :
-            setScanLedColor(NONE);
-            setUploadLedColor(YELLOW);
+            set_scan_led_color(NONE);
+            set_upload_led_lolor(YELLOW);
             break;
-        case UPLOADIND :
-            setScanLedColor(NONE);
-            setUploadLedColor(RED);
+        case UPLOADING :
+            set_scan_led_color(NONE);
+            set_upload_led_lolor(RED);
             break;
         case UPLOADED :
-            setScanLedColor(NONE);
-            setUploadLedColor(GREEN);
+            set_scan_led_color(NONE);
+            set_upload_led_lolor(GREEN);
             break;
     }
 }

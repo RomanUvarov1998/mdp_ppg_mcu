@@ -17,23 +17,16 @@
     #include "avr/interrupt.h"
 
     #define BAUD 9600
-    //#define MYUBRR 104//F_CPU/16/BAUD-1
-    #define 	BAUD_TOL   1 
-//    #define 	UBRR_VALUE 
-//    #define 	UBRRL_VALUE 
-//    #define 	UBRRH_VALUE 
-    #define 	USE_2X   0
+    #define BAUD_TOL   1 
+    #define USE_2X   0
     #include "util/setbaud.h"
     #include "serial.h"
 
     #include "btns.h"
-    
-    //SD library
-    #include "string.h"
-    #include "SD/diskio.h"
-    #include "SD/pff.h"
-    #include "SD/pffconf.h"
 
-    void state_transit();
+    #include "string.h"
+    #include "spi.h"
+    #include "sd_card.h"
+    
 #endif
 
