@@ -8,10 +8,18 @@
 #ifndef MAIN_H
     #define	MAIN_H
 
+    //******settings******
+    #define USE_SD_CARD 1
+    #define NOTIFY 1
+    #define TRACE_SD_INIT 0
+    #define TRACE_BLOCK_READ_WRITE 0
+    //********************
+
     #define F_CPU 16000000UL
     #include "avr/io.h"
     #include "util/delay.h"
     #include "stdint.h"    
+
     #include "leds.h"
     #include "state.h"
     #include "avr/interrupt.h"
@@ -27,6 +35,12 @@
     #include "string.h"
     #include "spi.h"
     #include "sd_card.h"
+
+    #include "adc.h"
+
+    void Error();
+    void Success();    
+    void Mark();
     
 #endif
 

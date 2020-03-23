@@ -6,7 +6,7 @@ volatile enum States next_state = WAIT_FOR_SCAN;
 void state_set(enum States value){
     next_state = value;
 }
-void state_pin(){
+void state_leds(){
     switch (state){
         case CARD_ERROR :
             set_scan_led_color(RED);

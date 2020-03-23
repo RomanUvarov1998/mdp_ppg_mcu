@@ -11,32 +11,32 @@ void init_btns(){
 
 // btn "MODE"
 ISR(INT1_vect){
-    cli();
+    //cli();
     switch (state){
-//          case CARD_ERROR :
-//              break;
+          case CARD_ERROR :
+              break;
           case WAIT_FOR_SCAN :       
               state_set(WAIT_FOR_UPLOAD);
               break;
-//          case SCANNING :
-//              break;
+          case SCANNING :
+              break;
           case WAIT_FOR_UPLOAD :
               state_set(WAIT_FOR_SCAN); 
               break;
-//          case UPLOADING :
-//              break;
-//          case UPLOADED :
-//              break;
+          case UPLOADING :
+              break;
+          case UPLOADED :
+              state_set(WAIT_FOR_SCAN); 
+              break;
       }
-    sei();
+    //sei();
 }
 
 // btn "START/STOP"
 ISR(INT0_vect){
-    cli();
     switch (state){
-//        case CARD_ERROR :
-//            break;
+        case CARD_ERROR :
+            break;
         case WAIT_FOR_SCAN :     
             state_set(SCANNING); 
             break;
@@ -46,10 +46,9 @@ ISR(INT0_vect){
         case WAIT_FOR_UPLOAD :
             state_set(UPLOADING); 
             break;
-//        case UPLOADING :
-//            break;
-//        case UPLOADED :
-//            break;
+        case UPLOADING :
+            break;
+        case UPLOADED :
+            break;
     }
-    sei();
 }

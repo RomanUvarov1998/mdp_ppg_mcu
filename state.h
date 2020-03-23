@@ -23,6 +23,6 @@
     volatile enum States next_state;
     
     void state_set(enum States value);
-    void state_pin();
+    void state_leds();
 #endif	/* STATE_H */
 

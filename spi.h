@@ -10,35 +10,39 @@
 
     #include "main.h"
 
-    #define SWSPI_PORT					PORTB
-    #define SWSPI_PIN					PINB
-    #define SWSPI_DDR					DDRB
+    // pin definitions
+    #define DDR_SPI             DDRB
+    #define PORT_SPI            PORTB
+    #define CS                  PINB2
+    #define MOSI                PINB3
+    #define MISO                PINB4
+    #define SCK                 PINB5
 
-    #define SWSPI_MISO					_BV(PB4)
-    #define SWSPI_MOSI					_BV(PB3)
-    #define SWSPI_SCLK					_BV(PB5)
-    #define SWSPI_CSEL					_BV(PB2)
+    // macros
+    #define CS_ENABLE()         PORT_SPI &= ~(1 << CS)
+    #define CS_DISABLE()        PORT_SPI |= (1 << CS)
 
-    /*
-    Define this to make code generate symmetrical
-    clock signal, 16 cycles HIGH / 16 cycles LOW
-    (4/15 otherwise).
-    */
-    #define SWSPI_SYMMCLK 1
-    #define nop()						{asm volatile ("nop");}
+    // initialization definitions
+    #define SPI_MASTER          0b0001000000000000
+    #define SPI_SLAVE           0b0000000000000000
+    #define SPI_FOSC_4          0b0000000000000000
+    #define SPI_FOSC_16         0b0000000100000000
+    #define SPI_FOSC_64         0b0000001000000000
+    #define SPI_FOSC_128        0b0000001100000000
+    #define SPI_2X_FOSC_2       0b0000000000000001
+    #define SPI_2X_FOSC_8       0b0000000100000001
+    #define SPI_2X_FOSC_32      0b0000001000000001
+    #define SPI_2X_FOSC_64      0b0000001100000001
+    #define SPI_INTERRUPTS      0b1000000000000000
+    #define SPI_MODE_0          0b0000000000000000
+    #define SPI_MODE_1          0b0000010000000000
+    #define SPI_MODE_2          0b0000100000000000
+    #define SPI_MODE_3          0b0000110000000000
+    #define SPI_DEFAULT         SPI_MASTER | SPI_FOSC_128 | SPI_MODE_0
 
-    #define SPI_MODE_MASK 0x0C  // CPOL = bit 3, CPHA = bit 2 on SPCR
-    #define SPI_CLOCK_MASK 0x03  // SPR1 = bit 1, SPR0 = bit 0 on SPCR
-    #define SPI_2XCLOCK_MASK 0x01  // SPI2X = bit 0 on SPSR
-
-    #define LSBFIRST 0
-    #define MSBFIRST 1
-
-    void spi_init(void);
-    void chip_select_low();
-    void chip_select_high();
-    void spi_tx_byte(uint8_t b);
-    uint8_t spi_rx_byte(void);
+    // SPI functions
+    void SPI_init(uint16_t initParams);
+    uint8_t SPI_transfer(uint8_t data);
 
 #endif	/* SPI_H */
 

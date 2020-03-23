@@ -11,19 +11,11 @@
     #include "main.h"
 
     void upload_signal();
-    void init_UART();
-
-    enum StatesTx {
-        BEFORE_TX = 0,
-        SIGNAL_LENGTH_01 = 1,
-        SIGNAL_LENGTH_23 = 2,
-        DATA = 3,
-        END = 4,
-    };
+    void UART_on();
+    void UART_off();
     
-    volatile uint8_t stateTx;
-
-    volatile uint32_t sendingValueNum;
+    void tx_byte(uint8_t data);
+    uint8_t rx_byte();
 
 #endif	/* SERIAL_H */
 
