@@ -20,7 +20,7 @@ void state_leds(){
             set_scan_led_color(RED);
             set_upload_led_lolor(NONE);
             break;
-        case WAIT_FOR_UPLOAD :
+        case WAIT_FOR_TALK_TO_PC :
             set_scan_led_color(NONE);
             set_upload_led_lolor(YELLOW);
             break;

@@ -14,7 +14,7 @@
         CARD_ERROR,
         WAIT_FOR_SCAN,
         SCANNING,
-        WAIT_FOR_UPLOAD,
+        WAIT_FOR_TALK_TO_PC,
         TALK_TO_PC,
         STOP_TALK_TO_PC
     };

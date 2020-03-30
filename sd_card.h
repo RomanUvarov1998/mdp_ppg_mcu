@@ -101,6 +101,11 @@
     } sd_cursor;
     uint32_t signal_length;
     
+    #define CHANNELS_MASK_BYTE 5
+    
+    void sd_read_settings();
+    void sd_write_settings();
+    
     void sd_reset_write_cursor();
     void sd_write_next_byte(uint8_t data);
     void sd_write_left_bytes_if_need();

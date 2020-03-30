@@ -105,12 +105,14 @@ static void state_transit(){
             scan_while_btn_pressed();
             adc_off();
             break;
-        case WAIT_FOR_UPLOAD :     
+        case WAIT_FOR_TALK_TO_PC :     
             break;
         case TALK_TO_PC :
             UART_on();
             while (next_state == TALK_TO_PC){
                 uint8_t pc_token = rx_byte();
+                
+                if (next_state != TALK_TO_PC) break;
                 
                 switch (pc_token){
                     case GET_SIGNAL_LENGTH:
@@ -151,12 +153,28 @@ static void state_transit(){
                         }
                         break;
                     case SAVE_SETTINGS:
+                        sd_read_settings();
+                        uint8_t channels_mask = rx_byte();
+                        sd_buffer[CHANNELS_MASK_BYTE] = channels_mask;
+                        
+                        if (next_state != TALK_TO_PC) break;
+                        sd_write_settings();
+                        
+                        sd_read_settings();
+                        channels_mask = sd_buffer[CHANNELS_MASK_BYTE];
+                        
+                        buffer[0] = SAVE_SETTINGS;
+                        buffer[1] = channels_mask;
+                        buffer[2] = 0;
+                        buffer[3] = 0;
+                        buffer[4] = 0;
+
+                        send_buffer(); 
                         break;
                     case DATA_END:
                         break;
                 }
             }
-//            upload_signal();
             UART_off();
             break;
         case STOP_TALK_TO_PC :

@@ -16,11 +16,11 @@ ISR(INT1_vect){
           case CARD_ERROR :
               break;
           case WAIT_FOR_SCAN :       
-              state_set(WAIT_FOR_UPLOAD);
+              state_set(WAIT_FOR_TALK_TO_PC);
               break;
           case SCANNING :
               break;
-          case WAIT_FOR_UPLOAD :
+          case WAIT_FOR_TALK_TO_PC :
               state_set(WAIT_FOR_SCAN); 
               break;
           case TALK_TO_PC :
@@ -43,7 +43,7 @@ ISR(INT0_vect){
         case SCANNING :
             state_set(WAIT_FOR_SCAN); 
             break;
-        case WAIT_FOR_UPLOAD :
+        case WAIT_FOR_TALK_TO_PC :
             state_set(TALK_TO_PC); 
             break;
         case TALK_TO_PC :

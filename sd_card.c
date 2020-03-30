@@ -536,6 +536,13 @@ uint8_t SD_writeSingleBlock(uint32_t addr, const uint8_t *buf, uint8_t *token) {
 }
 
 
+void sd_read_settings(){
+    SD_readSingleBlock(SIGNAL_DATA_SECTOR_NUM, sd_buffer, &token);
+}
+void sd_write_settings(){
+    SD_writeSingleBlock(SIGNAL_DATA_SECTOR_NUM, sd_buffer, &token);
+}
+
 
 void sd_reset_write_cursor(){
     sd_cursor.byte_num = 0;
@@ -588,6 +595,7 @@ void sd_write_signal_data(){
     IndicateSDWrite();        
 #endif
 }
+
 
 void sd_read_signal_data(){
 #if USE_SD_CARD
