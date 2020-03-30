@@ -152,7 +152,7 @@ static void state_transit(){
                             }
                         }
                         break;
-                    case SAVE_SETTINGS:
+                    case SAVE_SETTINGS:                        
                         sd_read_settings();
                         uint8_t channels_mask = rx_byte();
                         sd_buffer[CHANNELS_MASK_BYTE] = channels_mask;
