@@ -106,10 +106,10 @@
     void sd_write_left_bytes_if_need();
     void sd_write_signal_data();
     
-    void sd_reset_read_cursor();
+    void sd_read_signal_data();
+    void sd_start_read_signal_values();
     uint8_t sd_read_next_byte();
     
     void scan_while_btn_pressed();
-    void upload_signal();
 #endif	/* SD_CARD_H */
 

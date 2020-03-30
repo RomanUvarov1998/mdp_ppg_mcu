@@ -107,12 +107,59 @@ static void state_transit(){
             break;
         case WAIT_FOR_UPLOAD :     
             break;
-        case UPLOADING :
+        case TALK_TO_PC :
             UART_on();
-            upload_signal();
+            while (next_state == TALK_TO_PC){
+                uint8_t pc_token = rx_byte();
+                
+                switch (pc_token){
+                    case GET_SIGNAL_LENGTH:
+                        sd_read_signal_data();
+                        
+                        buffer[0] = GET_SIGNAL_LENGTH;
+                        buffer[1] = (uint8_t)(signal_length >> 0);
+                        buffer[2] = (uint8_t)(signal_length >> 8);
+                        buffer[3] = (uint8_t)(signal_length >> 16);
+                        buffer[4] = (uint8_t)(signal_length >> 24);
+                        
+                        send_buffer();
+                        break;
+                    case GET_DATA:
+                        sd_start_read_signal_values();
+                        
+                        while (1){
+                            buffer[0] = GET_DATA;
+                            buffer[1] = sd_read_next_byte();
+                            buffer[2] = sd_read_next_byte();
+                            buffer[3] = 0;
+                            buffer[4] = 0;
+                        
+                            send_buffer();
+
+                            ++sd_cursor.value_num;  
+
+                            if (sd_cursor.value_num >= signal_length) {  
+                                buffer[0] = DATA_END;
+                                buffer[1] = 0;
+                                buffer[2] = 0;
+                                buffer[3] = 0;
+                                buffer[4] = 0;
+                                
+                                send_buffer();                            
+                                break;
+                            }
+                        }
+                        break;
+                    case SAVE_SETTINGS:
+                        break;
+                    case DATA_END:
+                        break;
+                }
+            }
+//            upload_signal();
             UART_off();
             break;
-        case UPLOADED :
+        case STOP_TALK_TO_PC :
             break;
     }
 }

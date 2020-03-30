@@ -23,9 +23,9 @@ ISR(INT1_vect){
           case WAIT_FOR_UPLOAD :
               state_set(WAIT_FOR_SCAN); 
               break;
-          case UPLOADING :
+          case TALK_TO_PC :
               break;
-          case UPLOADED :
+          case STOP_TALK_TO_PC :
               state_set(WAIT_FOR_SCAN); 
               break;
       }
@@ -44,11 +44,13 @@ ISR(INT0_vect){
             state_set(WAIT_FOR_SCAN); 
             break;
         case WAIT_FOR_UPLOAD :
-            state_set(UPLOADING); 
+            state_set(TALK_TO_PC); 
             break;
-        case UPLOADING :
+        case TALK_TO_PC :
+            state_set(STOP_TALK_TO_PC); 
             break;
-        case UPLOADED :
+        case STOP_TALK_TO_PC :
+            state_set(TALK_TO_PC); 
             break;
     }
 }

@@ -24,11 +24,11 @@ void state_leds(){
             set_scan_led_color(NONE);
             set_upload_led_lolor(YELLOW);
             break;
-        case UPLOADING :
+        case TALK_TO_PC :
             set_scan_led_color(NONE);
             set_upload_led_lolor(RED);
             break;
-        case UPLOADED :
+        case STOP_TALK_TO_PC :
             set_scan_led_color(NONE);
             set_upload_led_lolor(GREEN);
             break;

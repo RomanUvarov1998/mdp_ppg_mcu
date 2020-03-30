@@ -589,8 +589,7 @@ void sd_write_signal_data(){
 #endif
 }
 
-
-void sd_reset_read_cursor(){
+void sd_read_signal_data(){
 #if USE_SD_CARD
     SD_readSingleBlock(SIGNAL_DATA_SECTOR_NUM, sd_buffer, &token);
     
@@ -600,12 +599,16 @@ void sd_reset_read_cursor(){
     signal_length |= ( ((uint32_t)sd_buffer[2]) << 16 );
     signal_length |= ( ((uint32_t)sd_buffer[3]) << 24 );
 #endif
-    
+}
+
+void sd_start_read_signal_values(){
+#if USE_SD_CARD
     sd_cursor.byte_num = 0;
     sd_cursor.value_num = 0;
     sd_cursor.sector_num = SIGNAL_VALUES_START_SECTOR_NUM;
     
     SD_readSingleBlock(sd_cursor.sector_num, sd_buffer, &token);
+#endif
 }
 
 uint8_t sd_read_next_byte(){     
@@ -644,28 +647,4 @@ void scan_while_btn_pressed(){
 #else
     signal_length = sd_cursor.value_num;
 #endif
-}
-    
-void upload_signal(){    
-    sd_reset_read_cursor();  
-    
-    rx_byte();
-    tx_byte((uint8_t)(signal_length >> 0));
-    tx_byte((uint8_t)(signal_length >> 8));
-    tx_byte((uint8_t)(signal_length >> 16));
-    tx_byte((uint8_t)(signal_length >> 24));
-    
-    rx_byte();  
-    while (1){
-        tx_byte(sd_read_next_byte());
-        tx_byte(sd_read_next_byte());
-
-        ++sd_cursor.value_num;  
-        
-        if (sd_cursor.value_num >= signal_length) {  
-            state_set(UPLOADED); 
-//            StopReading();
-            break;
-        }
-    }
 }

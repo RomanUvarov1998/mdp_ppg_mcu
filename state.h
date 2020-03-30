@@ -15,8 +15,8 @@
         WAIT_FOR_SCAN,
         SCANNING,
         WAIT_FOR_UPLOAD,
-        UPLOADING,
-        UPLOADED
+        TALK_TO_PC,
+        STOP_TALK_TO_PC
     };
     
     volatile enum States state;
