@@ -24,9 +24,10 @@
     
     enum MC_Tokens
     {
-      GET_SIGNAL_LENGTH = 1,
-      GET_DATA = 2,
-      DATA_END = 3,
+      CHANNELS_MASK = 1,
+      GET_SIGNAL_LENGTH = 2,
+      GET_DATA = 3,
+      DATA_END = 4,
       SAVE_SETTINGS = 5,
     };
 

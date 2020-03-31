@@ -93,15 +93,17 @@
 
     #define SIGNAL_DATA_SECTOR_NUM 0
     #define SIGNAL_VALUES_START_SECTOR_NUM (SIGNAL_DATA_SECTOR_NUM + 1)
-    uint8_t sd_buffer[SD_BLOCK_LEN];
+    volatile uint8_t sd_buffer[SD_BLOCK_LEN];
     struct {
-        uint32_t byte_num;
-        uint32_t value_num;
-        uint32_t sector_num;
+        volatile uint32_t byte_num;
+        volatile uint32_t value_num;
+        volatile uint32_t sector_num;
     } sd_cursor;
-    uint32_t signal_length;
+    volatile uint32_t signal_length;
+    volatile uint8_t channels_mask;
     
     #define CHANNELS_MASK_BYTE 5
+    #define MAX_CHANNEL_NUM 5
     
     void sd_read_settings();
     void sd_write_settings();

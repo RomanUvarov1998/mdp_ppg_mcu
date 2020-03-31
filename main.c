@@ -114,7 +114,18 @@ static void state_transit(){
                 
                 if (next_state != TALK_TO_PC) break;
                 
-                switch (pc_token){
+                switch (pc_token){                    
+                    case CHANNELS_MASK:
+                        sd_read_signal_data();
+                        
+                        buffer[0] = CHANNELS_MASK;
+                        buffer[1] = channels_mask;
+                        buffer[2] = 0;
+                        buffer[3] = 0;
+                        buffer[4] = 0;     
+                        
+                        send_buffer(); 
+                        break;
                     case GET_SIGNAL_LENGTH:
                         sd_read_signal_data();
                         
@@ -130,13 +141,22 @@ static void state_transit(){
                         sd_start_read_signal_values();
                         
                         while (1){
-                            buffer[0] = GET_DATA;
-                            buffer[1] = sd_read_next_byte();
-                            buffer[2] = sd_read_next_byte();
-                            buffer[3] = 0;
-                            buffer[4] = 0;
-                        
-                            send_buffer();
+                            uint8_t channel_num;                            
+                            for (channel_num = 0; channel_num < 8; ++channel_num){
+                                if (channels_mask & (1 << channel_num)){                                      
+                                    buffer[0] = GET_DATA;
+                                    buffer[1] = channel_num;
+                                    buffer[2] = sd_read_next_byte();
+                                    buffer[3] = sd_read_next_byte();
+                                    buffer[4] = 0;
+
+                                    send_buffer();
+                                    rx_byte();
+                                } else {
+                                    sd_read_next_byte();
+                                    sd_read_next_byte();
+                                }
+                            }
 
                             ++sd_cursor.value_num;  
 
@@ -154,7 +174,7 @@ static void state_transit(){
                         break;
                     case SAVE_SETTINGS:                        
                         sd_read_settings();
-                        uint8_t channels_mask = rx_byte();
+                        channels_mask = rx_byte();
                         sd_buffer[CHANNELS_MASK_BYTE] = channels_mask;
                         
                         if (next_state != TALK_TO_PC) break;

@@ -580,7 +580,10 @@ void sd_write_left_bytes_if_need(){
 #endif 
 }
 
-void sd_write_signal_data(){
+void sd_write_signal_data(){    
+    SD_readSingleBlock(SIGNAL_DATA_SECTOR_NUM, sd_buffer, &token); 
+    channels_mask = sd_buffer[CHANNELS_MASK_BYTE]; 
+    
     uint16_t i;
     for (i = 0; i < SD_BLOCK_LEN; ++i) sd_buffer[i] = 0;
     
@@ -588,6 +591,7 @@ void sd_write_signal_data(){
     sd_buffer[1] = (uint8_t)(sd_cursor.value_num >> 8);
     sd_buffer[2] = (uint8_t)(sd_cursor.value_num >> 16);
     sd_buffer[3] = (uint8_t)(sd_cursor.value_num >> 24);
+    sd_buffer[CHANNELS_MASK_BYTE] = channels_mask;
     
     SD_writeSingleBlock(SIGNAL_DATA_SECTOR_NUM, sd_buffer, &token);      
         
@@ -606,6 +610,8 @@ void sd_read_signal_data(){
     signal_length |= ( ((uint32_t)sd_buffer[1]) << 8 );
     signal_length |= ( ((uint32_t)sd_buffer[2]) << 16 );
     signal_length |= ( ((uint32_t)sd_buffer[3]) << 24 );
+    
+    channels_mask = sd_buffer[CHANNELS_MASK_BYTE];
 #endif
 }
 
@@ -636,17 +642,32 @@ uint8_t sd_read_next_byte(){
 
 
 
-void scan_while_btn_pressed(){  
+void scan_while_btn_pressed(){ 
+    sd_read_signal_data();
     sd_reset_write_cursor();
     
     while (next_state == SCANNING){  
+        uint8_t channel_num;
+        for (channel_num = 0; channel_num < 8; ++channel_num){
+            if (channels_mask & (1 << channel_num)){
+                uint16_t value = adc_convert(channel_num);
+                sd_write_next_byte((uint8_t)(value));
+                sd_write_next_byte((uint8_t)(value >> 8));
+            } else {
+                sd_write_next_byte(0);
+                sd_write_next_byte(0);
+            }
+            state_leds(); 
+        }
+        
+//        if (sd_cursor.sector_num == 1) Mark();
+//            
+//        next_state = WAIT_FOR_SCAN;
+        
+        ++sd_cursor.value_num;
+            
         //250 Hz ~ 4ms
         _delay_ms(4);
-        uint16_t value = adc_convert(0);
-        sd_write_next_byte((uint8_t)(value));
-        sd_write_next_byte((uint8_t)(value >> 8));
-        ++sd_cursor.value_num;
-        state_leds();
     }    
     
 #if USE_SD_CARD
