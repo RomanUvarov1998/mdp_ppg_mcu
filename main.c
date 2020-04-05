@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
     init_btns();
     
 #if USE_SD_CARD
-    SPI_init(SPI_MASTER | SPI_FOSC_64 | SPI_MODE_0);
+    SPI_init();
     
     SD_init();  
 #endif
@@ -122,7 +122,7 @@ static void state_transit(){
                         buffer[1] = channels_mask;
                         buffer[2] = 0;
                         buffer[3] = 0;
-                        buffer[4] = 0;     
+                        buffer[4] = 0;    
                         
                         send_buffer(); 
                         break;
@@ -167,12 +167,13 @@ static void state_transit(){
                                 buffer[3] = 0;
                                 buffer[4] = 0;
                                 
-                                send_buffer();                            
+                                send_buffer();   
+                                Mark();
                                 break;
                             }
                         }
                         break;
-                    case SAVE_SETTINGS:                        
+                    case SAVE_SETTINGS:   
                         sd_read_settings();
                         channels_mask = rx_byte();
                         sd_buffer[CHANNELS_MASK_BYTE] = channels_mask;

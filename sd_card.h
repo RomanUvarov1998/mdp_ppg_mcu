@@ -14,6 +14,9 @@
     #define CMD0                0
     #define CMD0_ARG            0x00000000
     #define CMD0_CRC            0x94
+    #define CMD1                1
+    #define CMD1_ARG            0x40000000
+    #define CMD1_CRC            0x94
     #define CMD8                8
     #define CMD8_ARG            0x0000001AA
     #define CMD8_CRC            0x86

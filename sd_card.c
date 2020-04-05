@@ -10,22 +10,25 @@ uint8_t SD_init()
     SD_powerUpSeq();
     Success();
 
-    while((res[0] = SD_goIdleState()) != SD_IN_IDLE_STATE)
-    {
+    do {
         cmdAttempts++;
         if(cmdAttempts == CMD0_MAX_ATTEMPTS)
         {
             Error();
             return SD_ERROR;
         }
-    }
+        
+        res[0] = SD_goIdleState(); //CMD0
+        
+        _delay_ms(3);
+    } while((res[0]) != SD_IN_IDLE_STATE);
 #if TRACE_SD_INIT
     Success();
 #endif
 
     _delay_ms(1);
 
-    SD_sendIfCond(res);
+    SD_sendIfCond(res); //CMD8
     if(res[0] != SD_IN_IDLE_STATE)
     {
         Error();
@@ -53,10 +56,11 @@ uint8_t SD_init()
             return SD_ERROR;
         }
 
-        res[0] = SD_sendApp();
+        res[0] = SD_sendApp(); //CMD55
+
         if(SD_R1_NO_ERROR(res[0]))
         {
-            res[0] = SD_sendOpCond();
+            res[0] = SD_sendOpCond(); //ACMD41
         }
 
         _delay_ms(3);
@@ -379,6 +383,8 @@ uint8_t SD_readSingleBlock(uint32_t addr, uint8_t *buf, uint8_t *token)
 {
     uint8_t res1, read;
     uint16_t readAttempts;
+    
+    addr = (addr >> 9);
 
     // set token to none
     *token = 0xFF;
@@ -437,6 +443,8 @@ token = 0xFF - response timeout
 uint8_t SD_writeSingleBlock(uint32_t addr, const uint8_t *buf, uint8_t *token) {
     uint16_t readAttempts;
     uint8_t res1, read;
+    
+    addr = (addr >> 9);
 
     // set token to none
     *token = 0xFF;
@@ -447,13 +455,13 @@ uint8_t SD_writeSingleBlock(uint32_t addr, const uint8_t *buf, uint8_t *token) {
     SPI_transfer(0xFF);
     
 //    do {
+        _delay_ms(1);    
         // send CMD24
         SD_command(CMD24, addr, CMD24_CRC);
         _delay_ms(1);    
 
         // read response
-        res1 = SD_readRes1();        
-        _delay_ms(1);    
+        res1 = SD_readRes1();  
 //    } while (res1 != SD_READY);
     
 #if TRACE_BLOCK_READ_WRITE
@@ -488,7 +496,7 @@ uint8_t SD_writeSingleBlock(uint32_t addr, const uint8_t *buf, uint8_t *token) {
         
         // wait for a response (timeout = 250ms)
         readAttempts = 0;
-        while(++readAttempts != SD_MAX_WRITE_ATTEMPTS || 1 == 1){ 
+        while(++readAttempts != SD_MAX_WRITE_ATTEMPTS /*|| 1 == 1*/){ 
             _delay_ms(1);
             if((read = SPI_transfer(0xFF)) != 0xFF) { 
                 *token = 0xFF; 
@@ -583,6 +591,8 @@ void sd_write_left_bytes_if_need(){
 void sd_write_signal_data(){    
     SD_readSingleBlock(SIGNAL_DATA_SECTOR_NUM, sd_buffer, &token); 
     channels_mask = sd_buffer[CHANNELS_MASK_BYTE]; 
+    
+    if (channels_mask == 3) Mark();
     
     uint16_t i;
     for (i = 0; i < SD_BLOCK_LEN; ++i) sd_buffer[i] = 0;
