@@ -10,9 +10,9 @@
 
     //******settings******
     #define USE_SD_CARD 1
-    #define NOTIFY 1
-    #define TRACE_SD_INIT 1
-    #define TRACE_BLOCK_READ_WRITE 1
+    #define NOTIFY 0
+    #define TRACE_SD_INIT 0
+    #define TRACE_BLOCK_READ_WRITE 0
     //********************
 
     #define F_CPU 16000000UL
@@ -34,7 +34,8 @@
 
     #include "string.h"
     #include "spi.h"
-    #include "sd_card.h"
+//    #include "sd_card.h"
+    #include "sd_2.h"
 
     #include "adc.h"
 

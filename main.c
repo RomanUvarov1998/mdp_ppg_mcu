@@ -65,7 +65,9 @@ int main(int argc, char** argv) {
 #if USE_SD_CARD
     SPI_init();
     
-    SD_init();  
+//    SD_init();  
+    mmc_disk_initialize();
+    
 #endif
     
     set_scan_led_color(GREEN);
@@ -168,7 +170,6 @@ static void state_transit(){
                                 buffer[4] = 0;
                                 
                                 send_buffer();   
-                                Mark();
                                 break;
                             }
                         }
